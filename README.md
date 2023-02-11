@@ -8,5 +8,5 @@ The Jupyter Notebook Automation Framework.
 
 ## Feature Wishlists
 
-- Output Parser on Notebooks
-- Report Generator from Notebook execution outputs
+- [ ] Output Parser on Notebooks
+- [ ] Report Generator from Notebook execution outputs
