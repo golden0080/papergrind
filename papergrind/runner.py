@@ -9,7 +9,9 @@ import papermill as pm
 
 
 class NotebookRunner():
-    def __init__(self, params, template_path, output_filename_template_format_str):
+    def __init__(
+            self, params, template_path, output_filename_template_format_str,
+    ):
         self.template_path = template_path
         self.output_filename_format_str = output_filename_template_format_str
         self.params = params
@@ -32,9 +34,13 @@ class NotebookRunner():
         # so far only support single thread
         assert num_workers == 1, "Only Single Worker supported now."
 
+        results = []
         for param_dict in self.params.param_dict():
-            pm.execute_notebook(
+            nb_output = pm.execute_notebook(
                 self.template_path,
                 self.get_output_filename(param_dict),
                 parameters=param_dict
             )
+            results.append((param_dict, nb_output))
+
+        return results

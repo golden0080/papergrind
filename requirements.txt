@@ -1,1 +1,2 @@
 papermill
+nbformat >= 5.1.2
