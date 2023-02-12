@@ -40,8 +40,13 @@ def find_tagged_cells(nb, tag):
 
 def find_typed_outputs(nb_cell, output_type, output_filter_fn=None):
     """Find the outputs of specific type.
-    The ``output_filter_fn`` is a function that takes in list element from cell.outputs,
-    with a signature ``lambda: nbformat.NotebookNode -> bool``
+    The ``output_filter_fn`` is a function that takes in list element from cell.outputs, and
+    the index in the located output list, with a signature
+    ``lambda: idx: int, cell_output: nbformat.NotebookNode -> bool``
+
+    When ``output_filter_fn`` = None, the ``output_filter_fn`` is equivalent
+    to `output_filter_fn = lambda idx, cell_output: True`,
+    which accepts any located outputs.
     """
     hits = []
     for _, output in enumerate(nb_cell.outputs):
@@ -52,8 +57,8 @@ def find_typed_outputs(nb_cell, output_type, output_filter_fn=None):
         filtered = hits
     else:
         filtered = []
-        for output in hits:
-            if output_filter_fn(output):
+        for idx, output in enumerate(hits):
+            if output_filter_fn(idx, output):
                 filtered.append(output)
     return filtered
 

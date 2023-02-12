@@ -10,3 +10,5 @@ The Jupyter Notebook Automation Framework.
 
 ## Feature Wishlists
 
+- [x] extend the `output_filter_fn` in `OutputLocator` to accept index of outputs.
+- [ ] Get this package on pypi
