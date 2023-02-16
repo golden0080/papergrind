@@ -61,3 +61,35 @@ class CombinationParams(BaseParamSequence):
 
     def values(self):
         yield from self.combo_iter(0, [])
+
+
+class Concat(BaseParamSequence):
+    def __init__(self, *params):
+        self.params = params
+
+        p_names = self.params[0].names
+        for p in self.params[1:]:
+            assert len(p) == len(self.params[0])
+            all_equal = True
+            for idx, name in enumerate(p.names):
+                if name != p_names[idx]:
+                    all_equal = False
+                    break
+            assert all_equal
+
+    def __len__(self):
+        total_len = 0
+        for param in self.params:
+            total_len += len(param)
+        return total_len
+
+    @property
+    def names(self):
+        all_names = []
+        for p in self.params:
+            all_names += p.names
+        return all_names
+
+    def values(self):
+        for p in self.params:
+            yield from p.values()
