@@ -65,11 +65,13 @@ class CombinationParams(BaseParamSequence):
 
 class Concat(BaseParamSequence):
     def __init__(self, *params):
+        assert len(params) > 1
         self.params = params
 
+        p_len = len(self.params[0])
         p_names = self.params[0].names
         for p in self.params[1:]:
-            assert len(p) == len(self.params[0])
+            assert len(p) == p_len
             all_equal = True
             for idx, name in enumerate(p.names):
                 if name != p_names[idx]:
@@ -78,17 +80,11 @@ class Concat(BaseParamSequence):
             assert all_equal
 
     def __len__(self):
-        total_len = 0
-        for param in self.params:
-            total_len += len(param)
-        return total_len
+        return len(self.params[0])
 
     @property
     def names(self):
-        all_names = []
-        for p in self.params:
-            all_names += p.names
-        return all_names
+        return self.params[0].names
 
     def values(self):
         for p in self.params:
