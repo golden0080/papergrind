@@ -12,4 +12,5 @@ The Jupyter Notebook Automation Framework.
 
 - [x] extend the `output_filter_fn` in `OutputLocator` to accept index of outputs.
 - [ ] for pandas df, provide utils to export and collect data for table results
+- [x] Support multi-worker for increasing parallelism
 - [ ] Get this package on pypi
