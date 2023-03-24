@@ -31,24 +31,38 @@ class NotebookRunner():
 
         return self.output_filename_format_str.format(**param_dict)
 
-    def run(self, num_workers=1):
+    def run(self, num_workers=1, autosave_every=60):
         results = []
+        errs = {}
+        outputs = set()
         with multi.Pool(num_workers) as pool:
             futures = []
             for param_dict in self.params.param_dict():
+                expected_output = self.get_output_filename(param_dict)
+                if expected_output in outputs:
+                    print(
+                        f"WARN: output overwrite detected on file {expected_output},"
+                        " Proceed with cautions...")
+                outputs.add(expected_output)
                 res_future = pool.apply_async(
                     pm.execute_notebook,
                     args=(
                         self.template_path,
-                        self.get_output_filename(param_dict)
+                        expected_output
                     ),
                     kwds={
                         "parameters": param_dict,
+                        "autosave_cell_every": autosave_every,
                     }
                 )
                 futures.append((param_dict, res_future))
             for param_dict, res in futures:
-                nb_output = res.get()
-                results.append((param_dict, nb_output))
+                expected_output = self.get_output_filename(param_dict)
+                try:
+                    nb_output = res.get()
+                    results.append((param_dict, nb_output))
+                except e:
+                    print(f"Error when running {expected_output}... Recording errors...")
+                    errs[expected_output] = e
 
-        return results
+        return results, errs
